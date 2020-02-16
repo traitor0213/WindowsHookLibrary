@@ -6,20 +6,6 @@ void hooker()
     printf("This is payload!\n");
 }
 
-DWORD ToBig(DWORD dwSource)
-{
-    DWORD r = 0;
-
-    DWORD j = sizeof(DWORD) - 1;
-    for (DWORD i = 0; i != sizeof(DWORD); i += 1)
-    {
-        ((BYTE*)&r)[j] = ((BYTE*)&dwSource)[i];
-        j -= 1;
-    }
-
-    return r;
-}
-
 int main()
 {
     const char *ModuleName = "kernel32.dll";
@@ -50,14 +36,12 @@ int main()
     DWORD* p = 0;
     DWORD r = 0;
 
-
     printf("instruction view!\n");
     printf("%x - %x - 5\n", (DWORD)hooker, (DWORD)FunctionAddress);
 
     r = (DWORD)hooker - (DWORD)FunctionAddress - (DWORD)5;
     memcpy(JMP + 1, &r, sizeof(LPVOID));
 
-    
     //create return instruction
     r += (DWORD)5;
     memcpy(RET + 1, &r, sizeof(LPVOID));
